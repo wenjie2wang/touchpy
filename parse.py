@@ -3,17 +3,27 @@
 # Python 3.6.0 (default, Jan 16 2017, 12:12:55)
 # [GCC 6.3.1 20170109] on linux
 
+
 # parse SAS scripts
+import os
+import pickle
 import re
 import string
-translator = str.maketrans('', '', string.punctuation)
 
 
 # read format script
 fhand = open("sas/comformat_icd10cm_2017.sas")
 comformat = fhand.readlines()
 
+# define output file name
+outDir = "dict/"
+if not os.path.exists(outDir):
+    os.makedirs(outDir)
+outFile = outDir + "icd10_subme.pickle"
 
+
+# define translator for punctuation
+translator = str.maketrans('', '', string.punctuation)
 # define dictionary based on key word: value
 valueRun = []
 equalSignLines = []
@@ -67,3 +77,10 @@ for i in range(len(valueRun) - 1):
                 for oneKey2 in keyList2:
                     comm = '[' + str(oneKey2) + '] = ' + dictValues[k]
                     exec(dictNames[i] + comm)
+
+
+# save generated dictionaries into pickles
+for oneDict in dictNames:
+    with open(re.sub("subme", oneDict, outFile), 'wb') as handle:
+        exec("pickle.dump(" + oneDict +
+             ", handle, protocol = pickle.HIGHEST_PROTOCOL)")
