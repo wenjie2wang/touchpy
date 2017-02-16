@@ -15,6 +15,7 @@ import string
 fhand = open("sas/comformat_icd10cm_2017.sas")
 comformat = fhand.readlines()
 
+
 # define output file name
 outDir = "dict/"
 if not os.path.exists(outDir):
@@ -80,7 +81,11 @@ for i in range(len(valueRun) - 1):
 
 
 # save generated dictionaries into pickles
+fout = open("icd10_dictionaries.txt", "w")
 for oneDict in dictNames:
-    with open(re.sub("subme", oneDict, outFile), 'wb') as handle:
+    outName = re.sub("subme", oneDict, outFile)
+    fout.write(outName + "\n")
+    with open(outName, 'wb') as handle:
         exec("pickle.dump(" + oneDict +
              ", handle, protocol = pickle.HIGHEST_PROTOCOL)")
+fout.close()
