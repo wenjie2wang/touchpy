@@ -244,7 +244,7 @@ def icd10(admission, drg_idx, dx_idx):
     else:
         como["htn_c"] = 0
     como.pop("htn", None)
-    como.pop("htn_c", None)
+    como.pop("htncx", None)
 
     out = [como[key] for key in com2]
     return out
