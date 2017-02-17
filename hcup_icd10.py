@@ -16,5 +16,11 @@ outDir = "sas/"
 if not os.path.exists(outDir):
     os.makedirs(outDir)
 
-urlreq.urlretrieve(hcup_sas_icd10 + txt01, filename = outDir + sas01)
-urlreq.urlretrieve(hcup_sas_icd10 + txt02, filename = outDir + sas02)
+try:
+    urlreq.urlretrieve(hcup_sas_icd10 + txt01, filename = outDir + sas01)
+    urlreq.urlretrieve(hcup_sas_icd10 + txt02, filename = outDir + sas02)
+except:
+    print("Error: failed to download SAS scripts from HCUP.")
+    exit()
+
+print("SAS scripts have been downloaded from HCUP to", outDir)

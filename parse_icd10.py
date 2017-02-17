@@ -11,7 +11,13 @@ import re
 
 
 # read format script
-fhand = open("sas/comformat_icd10cm_2017.sas")
+fName = "sas/comformat_icd10cm_2017.sas"
+try:
+    fhand = open(fName)
+except:
+    print("Error: failed to open/find", fName)
+    exit()
+
 comformat = fhand.readlines()
 
 
@@ -77,11 +83,18 @@ for i in range(len(valueRun) - 1):
 
 
 # save generated dictionaries into pickles
-fout = open("icd10_dictionaries.txt", "w")
-for oneDict in dictNames:
-    outName = re.sub("subme", oneDict, outFile)
-    fout.write(outName + "\n")
-    with open(outName, 'wb') as handle:
-        exec("pickle.dump(" + oneDict +
-             ", handle, protocol = pickle.HIGHEST_PROTOCOL)")
-fout.close()
+fName = "icd10_dictionaries.txt"
+try:
+    fout = open(fName, "w")
+    for oneDict in dictNames:
+        outName = re.sub("subme", oneDict, outFile)
+        fout.write(outName + "\n")
+        with open(outName, 'wb') as handle:
+            exec("pickle.dump(" + oneDict +
+                 ", handle, protocol = pickle.HIGHEST_PROTOCOL)")
+    fout.close()
+except:
+    print("Error: failed to create", fName)
+    exit()
+
+print("ICD-10 Dictionaries have been successfully generated.")

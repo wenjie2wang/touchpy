@@ -9,16 +9,20 @@ def dicts():
         fhand = open(inFile)
         dictNames = [a.strip() for a in fhand.readlines()]
     except:
-        print("Error: cannot open/find", inFile)
+        print("Error: failed to open/find", inFile)
         exit()
 
     # read in generated dictionaries
     for oneDict in dictNames:
-        with open(oneDict, 'rb') as handle:
-            tmp = pickle.load(handle)
-        dictIn = re.sub("dict/icd10_|.pickle", "", oneDict)
-        exec("dicts." + dictIn + " = tmp")
-        del tmp
+        try:
+            with open(oneDict, 'rb') as handle:
+                tmp = pickle.load(handle)
+            dictIn = re.sub("dict/icd10_|.pickle", "", oneDict)
+            exec("dicts." + dictIn + " = tmp")
+            del tmp
+        except:
+            print("Error: failed to open/find", oneDict)
+            exit()
 
     # other constant variables
     com1 = [0] * 30
