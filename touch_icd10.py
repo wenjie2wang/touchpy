@@ -1,4 +1,26 @@
-def icd10(admission, drg_idx, dx_idx):
+import pickle
+import re
+
+
+# function reading in dictionaries generated
+def dicts():
+    inFile = "icd10_dictionaries.txt"
+    try:
+        fhand = open(inFile)
+        dictNames = [a.strip() for a in fhand.readlines()]
+    except:
+        print("Error: cannot open/find", inFile)
+        exit()
+
+    # read in generated dictionaries
+    for oneDict in dictNames:
+        with open(oneDict, 'rb') as handle:
+            tmp = pickle.load(handle)
+        dictIn = re.sub("dict/icd10_|.pickle", "", oneDict)
+        exec("dicts." + dictIn + " = tmp")
+        del tmp
+
+    # other constant variables
     com1 = [0] * 30
     com2 = ["chf", "valve", "pulmcirc", "perivasc", "htn", "htncx", "para",
             "neuro", "chrnlung", "dm", "dmcx", "hypothy", "renlfail", "liver",
@@ -8,6 +30,18 @@ def icd10(admission, drg_idx, dx_idx):
     como = {}
     for i in range(30):
         como[com2[i]] = com1[i]
+    dicts.como = como
+
+    com2.append("htn_c")
+    com2.remove("htn")
+    com2.remove("htncx")
+    dicts.colNames = com2
+
+
+# function generating comorbodity measures from icd10 code
+def icd10(admission, drg_idx, dx_idx, dicts):
+
+    como = dicts.como.copy()
     htnpreg_ = 0
     htnwochf_ = 0
     htnwchf_ = 0
@@ -19,11 +53,11 @@ def icd10(admission, drg_idx, dx_idx):
     hhrwhrf_ = 0
     ohtnpreg_ = 0
 
-    for i in dx_idx:
+    for i in dx_idx[1:]:
         if admission[i] is "NA" or len(admission) is 0:
             continue
         else:
-            dx_value = rcomfmt.get(admission[i], "others")
+            dx_value = dicts.rcomfmt.get(admission[i], "others")
             if dx_value is not "others":
                 como[dx_value] = 1
                 # detailed hypertension flags
@@ -76,53 +110,78 @@ def icd10(admission, drg_idx, dx_idx):
 
     # Examine DRG and set flags to identify a particular DRG group
     drg = admission[drg_idx]
-    if carddrg.get(drg, "no") is 'yes':
+    cardflg = 0
+    periflg = 0
+    cereflg = 0
+    nervflg = 0
+    pulmflg = 0
+    diabflg = 0
+    hypoflg = 0
+    renalflg = 0
+    renfflg = 0
+    liverflg = 0
+    ulceflg = 0
+    hivflg = 0
+    leukflg = 0
+    cancflg = 0
+    arthflg = 0
+    nutrflg = 0
+    anemflg = 0
+    alcflg = 0
+    htncxflg = 0
+    htnflg = 0
+    coagflg = 0
+    psyflg = 0
+    obeseflg = 0
+    deprsflg = 0
+
+    if dicts.carddrg.get(drg, "no") is 'yes':
         cardflg = 1
-    if peridrg.get(drg, "no") is 'yes':
+    if dicts.peridrg.get(drg, "no") is 'yes':
         periflg = 1
-    if ceredrg.get(drg, "no") is 'yes':
+    if dicts.ceredrg.get(drg, "no") is 'yes':
         cereflg = 1
-    if nervdrg.get(drg, "no") is 'yes':
+    if dicts.nervdrg.get(drg, "no") is 'yes':
         nervflg = 1
-    if pulmdrg.get(drg, "no") is 'yes':
+    if dicts.pulmdrg.get(drg, "no") is 'yes':
         pulmflg = 1
-    if diabdrg.get(drg, "no") is 'yes':
+    if dicts.diabdrg.get(drg, "no") is 'yes':
         diabflg = 1
-    if hypodrg.get(drg, "no") is 'yes':
+    if dicts.hypodrg.get(drg, "no") is 'yes':
         hypoflg = 1
-    if renaldrg.get(drg, "no") is 'yes':
+    if dicts.renaldrg.get(drg, "no") is 'yes':
         renalflg = 1
-    if renfdrg.get(drg, "no") is 'yes':
+    if dicts.renfdrg.get(drg, "no") is 'yes':
         renfflg = 1
-    if liverdrg.get(drg, "no") is 'yes':
+    if dicts.liverdrg.get(drg, "no") is 'yes':
         liverflg = 1
-    if ulcedrg.get(drg, "no") is 'yes':
+    if dicts.ulcedrg.get(drg, "no") is 'yes':
         ulceflg = 1
-    if hivdrg.get(drg, "no") is 'yes':
+    if dicts.hivdrg.get(drg, "no") is 'yes':
         hivflg = 1
-    if leukdrg.get(drg, "no") is 'yes':
+    if dicts.leukdrg.get(drg, "no") is 'yes':
         leukflg = 1
-    if cancdrg.get(drg, "no") is 'yes':
+    if dicts.cancdrg.get(drg, "no") is 'yes':
         cancflg = 1
-    if arthdrg.get(drg, "no") is 'yes':
+    if dicts.arthdrg.get(drg, "no") is 'yes':
         arthflg = 1
-    if nutrdrg.get(drg, "no") is 'yes':
+    if dicts.nutrdrg.get(drg, "no") is 'yes':
         nutrflg = 1
-    if anemdrg.get(drg, "no") is 'yes':
+    if dicts.anemdrg.get(drg, "no") is 'yes':
         anemflg = 1
-    if alcdrg.get(drg, "no") is 'yes':
+    if dicts.alcdrg.get(drg, "no") is 'yes':
         alcflg = 1
-    if htncxdrg.get(drg, "no") is 'yes':
+    if dicts.htncxdrg.get(drg, "no") is 'yes':
         htncxflg = 1
-    if htndrg.get(drg, "no") is 'yes':
+    if dicts.htndrg.get(drg, "no") is 'yes':
         htnflg = 1
-    if coagdrg.get(drg, "no") is 'yes':
+    if dicts.coagdrg.get(drg, "no") is 'yes':
         coagflg = 1
-    if psydrg.get(drg, "no") is 'yes':
+    if dicts.psydrg.get(drg, "no") is 'yes':
         psyflg = 1
-    if obesedrg.get(drg, "no") is 'yes':
+    if dicts.obesedrg.get(drg, "no") is 'yes':
         obeseflg = 1
-    if deprsdrg.get(drg, "no") is 'yes':
+    if dicts.deprsdrg.get(drg, "no") is 'yes':
         deprsflg = 1
 
     # Redefining comorbidities by eliminating the DRG directly related to
@@ -243,8 +302,9 @@ def icd10(admission, drg_idx, dx_idx):
         como["htn_c"] = 1
     else:
         como["htn_c"] = 0
+    # remove htn and htncx
     como.pop("htn", None)
     como.pop("htncx", None)
 
-    out = [como[key] for key in com2]
+    out = [como[key] for key in dicts.colNames]
     return out
