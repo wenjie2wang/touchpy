@@ -58,7 +58,7 @@ def icd10(admission, drg_idx, dx_idx, dicts):
     ohtnpreg_ = 0
 
     for i in dx_idx[1:]:
-        if admission[i] is "NA" or len(admission) is 0:
+        if admission[i] is "na" or len(admission) is 0:
             continue
         else:
             dx_value = dicts.rcomfmt.get(admission[i], "others")

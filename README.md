@@ -24,7 +24,8 @@ started with `DX` or `dx` (not case-sensitive) and the column name specifying
 DRG codes has to start with `DRG` or `drg` (not case-sensitive). There has to be
 at least two columns of ICD-10 codes and should be only one column of DRG
 codes. (If multiple columns of DRG codes are detected, the last one will be
-used.)
+used.)  Furthermore, missing ICD-10 codes should be indicated by blanks, `NA`,
+or `na` (not case-sensitive).
 
 
 # Getting Started
