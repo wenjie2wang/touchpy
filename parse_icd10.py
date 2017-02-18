@@ -65,7 +65,7 @@ for i in range(len(valueRun) - 1):
         if len(key) == 0 or key.startswith("other"):
             continue
         # for rcomfmt
-        if i is 0:
+        if i == 0:
             comm = '["' + key + '"] = "' + dictValues[k] + '"'
             exec(dictNames[i] + comm)
         # for the rest

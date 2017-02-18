@@ -58,32 +58,32 @@ def icd10(admission, drg_idx, dx_idx, dicts):
     ohtnpreg_ = 0
 
     for i in dx_idx[1:]:
-        if admission[i] is "na" or len(admission) is 0:
+        if admission[i] == "na" or len(admission) == 0:
             continue
         else:
             dx_value = dicts.rcomfmt.get(admission[i], "others")
-            if dx_value is not "others":
+            if dx_value != "others":
                 como[dx_value] = 1
                 # detailed hypertension flags
-                if dx_value is "htnpreg":
+                if dx_value == "htnpreg":
                     htnpreg_ = 1
-                if dx_value is "htnwochf":
+                if dx_value == "htnwochf":
                     htnwochf_ = 1
-                if dx_value is "htnwchf":
+                if dx_value == "htnwchf":
                     htnwchf_ = 1
-                if dx_value is "hrenworf":
+                if dx_value == "hrenworf":
                     hrenworf_ = 1
-                if dx_value is "hrenwrf":
+                if dx_value == "hrenwrf":
                     hrenwrf_ = 1
-                if dx_value is "hhrwohrf":
+                if dx_value == "hhrwohrf":
                     hhrwohrf_ = 1
-                if dx_value is "hhrwchf":
+                if dx_value == "hhrwchf":
                     hhrwchf_ = 1
-                if dx_value is "hhrwrf":
+                if dx_value == "hhrwrf":
                     hhrwrf_ = 1
-                if dx_value is "hhrwhrf":
+                if dx_value == "hhrwhrf":
                     hhrwhrf_ = 1
-                if dx_value is "ohtnpreg":
+                if dx_value == "ohtnpreg":
                     ohtnpreg_ = 1
 
     # Initialize Hypertension, CHF, and Renal Comorbidity flags to 1 using the
@@ -139,53 +139,53 @@ def icd10(admission, drg_idx, dx_idx, dicts):
     obeseflg = 0
     deprsflg = 0
 
-    if dicts.carddrg.get(drg, "no") is 'yes':
+    if dicts.carddrg.get(drg, "no") == 'yes':
         cardflg = 1
-    if dicts.peridrg.get(drg, "no") is 'yes':
+    if dicts.peridrg.get(drg, "no") == 'yes':
         periflg = 1
-    if dicts.ceredrg.get(drg, "no") is 'yes':
+    if dicts.ceredrg.get(drg, "no") == 'yes':
         cereflg = 1
-    if dicts.nervdrg.get(drg, "no") is 'yes':
+    if dicts.nervdrg.get(drg, "no") == 'yes':
         nervflg = 1
-    if dicts.pulmdrg.get(drg, "no") is 'yes':
+    if dicts.pulmdrg.get(drg, "no") == 'yes':
         pulmflg = 1
-    if dicts.diabdrg.get(drg, "no") is 'yes':
+    if dicts.diabdrg.get(drg, "no") == 'yes':
         diabflg = 1
-    if dicts.hypodrg.get(drg, "no") is 'yes':
+    if dicts.hypodrg.get(drg, "no") == 'yes':
         hypoflg = 1
-    if dicts.renaldrg.get(drg, "no") is 'yes':
+    if dicts.renaldrg.get(drg, "no") == 'yes':
         renalflg = 1
-    if dicts.renfdrg.get(drg, "no") is 'yes':
+    if dicts.renfdrg.get(drg, "no") == 'yes':
         renfflg = 1
-    if dicts.liverdrg.get(drg, "no") is 'yes':
+    if dicts.liverdrg.get(drg, "no") == 'yes':
         liverflg = 1
-    if dicts.ulcedrg.get(drg, "no") is 'yes':
+    if dicts.ulcedrg.get(drg, "no") == 'yes':
         ulceflg = 1
-    if dicts.hivdrg.get(drg, "no") is 'yes':
+    if dicts.hivdrg.get(drg, "no") == 'yes':
         hivflg = 1
-    if dicts.leukdrg.get(drg, "no") is 'yes':
+    if dicts.leukdrg.get(drg, "no") == 'yes':
         leukflg = 1
-    if dicts.cancdrg.get(drg, "no") is 'yes':
+    if dicts.cancdrg.get(drg, "no") == 'yes':
         cancflg = 1
-    if dicts.arthdrg.get(drg, "no") is 'yes':
+    if dicts.arthdrg.get(drg, "no") == 'yes':
         arthflg = 1
-    if dicts.nutrdrg.get(drg, "no") is 'yes':
+    if dicts.nutrdrg.get(drg, "no") == 'yes':
         nutrflg = 1
-    if dicts.anemdrg.get(drg, "no") is 'yes':
+    if dicts.anemdrg.get(drg, "no") == 'yes':
         anemflg = 1
-    if dicts.alcdrg.get(drg, "no") is 'yes':
+    if dicts.alcdrg.get(drg, "no") == 'yes':
         alcflg = 1
-    if dicts.htncxdrg.get(drg, "no") is 'yes':
+    if dicts.htncxdrg.get(drg, "no") == 'yes':
         htncxflg = 1
-    if dicts.htndrg.get(drg, "no") is 'yes':
+    if dicts.htndrg.get(drg, "no") == 'yes':
         htnflg = 1
-    if dicts.coagdrg.get(drg, "no") is 'yes':
+    if dicts.coagdrg.get(drg, "no") == 'yes':
         coagflg = 1
-    if dicts.psydrg.get(drg, "no") is 'yes':
+    if dicts.psydrg.get(drg, "no") == 'yes':
         psyflg = 1
-    if dicts.obesedrg.get(drg, "no") is 'yes':
+    if dicts.obesedrg.get(drg, "no") == 'yes':
         obeseflg = 1
-    if dicts.deprsdrg.get(drg, "no") is 'yes':
+    if dicts.deprsdrg.get(drg, "no") == 'yes':
         deprsflg = 1
 
     # Redefining comorbidities by eliminating the DRG directly related to
