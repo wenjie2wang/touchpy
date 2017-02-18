@@ -8,7 +8,7 @@ import touch_icd9 as touch
 
 # read input data
 inputFile = input("Please enter the input CSV file name: ")
-inputFile = "sample_icd9.csv"
+# inputFile = "sample_icd9.csv"
 
 try:
     fhand0 = open(inputFile)
