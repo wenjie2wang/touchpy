@@ -22,7 +22,7 @@ basePath = os.path.basename(inputFile)
 outputFile = re.sub(".csv", "_touch.csv", basePath)
 
 # read in dictionaries
-touch.dicts()
+touch.dicts_icd10()
 
 # read input and write output line by line
 fout = open(outputFile, "w")
@@ -34,8 +34,8 @@ for line in fhand0:
     oneLine = tmpLine.split(",")
     if firstObs:
         input_colNames = oneLine
-        output_colNames = [touch.dicts.colNames[i].upper()
-                           for i in range(len(touch.dicts.colNames))]
+        output_colNames = [touch.dicts_icd10.colNames[i].upper()
+                           for i in range(len(touch.dicts_icd10.colNames))]
         fout.write(",".join(output_colNames) + '\n')
         dx_idx = []
         drg_idx = None
@@ -55,7 +55,7 @@ for line in fhand0:
                   "in the input file:", inputFile)
             exit()
     else:
-        tmp = touch.icd10(oneLine, drg_idx, dx_idx, touch.dicts)
+        tmp = touch.icd10(oneLine, drg_idx, dx_idx, touch.dicts_icd10)
         fout.write(",".join(list(map(str, tmp))) + "\n")
 
 fout.close()

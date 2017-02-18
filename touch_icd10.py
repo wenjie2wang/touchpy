@@ -3,7 +3,7 @@ import re
 
 
 # function reading in dictionaries generated
-def dicts():
+def dicts_icd10():
     inFile = "icd10_dictionaries.txt"
     try:
         fhand = open(inFile)
@@ -17,8 +17,8 @@ def dicts():
         try:
             with open(oneDict, 'rb') as handle:
                 tmp = pickle.load(handle)
-            dictIn = re.sub("dict/icd10_|.pickle", "", oneDict)
-            exec("dicts." + dictIn + " = tmp")
+            dictIn = re.sub("dict/icd10_|\.pickle", "", oneDict)
+            exec("dicts_icd10." + dictIn + " = tmp")
             del tmp
         except:
             print("Error: failed to open/find", oneDict)
@@ -34,12 +34,12 @@ def dicts():
     como = {}
     for i in range(30):
         como[com2[i]] = com1[i]
-    dicts.como = como
+    dicts_icd10.como = como
 
     com2.append("htn_c")
     com2.remove("htn")
     com2.remove("htncx")
-    dicts.colNames = com2
+    dicts_icd10.colNames = com2
 
 
 # function generating comorbodity measures from icd10 code

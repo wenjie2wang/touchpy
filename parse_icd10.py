@@ -38,7 +38,7 @@ for i in range(0, len(comformat)):
     line = comformat[i].strip().lower()
     # ignore comments
     comformat[i] = re.sub('/\*.*\*/|"|\$|,$|;$', "", line).strip()
-    if comformat[i].startswith("proc") or comformat[i].startswith("other"):
+    if comformat[i].startswith(("proc", "other")):
         continue
     if 'value' in comformat[i]:
         dictNames.append(comformat[i].split()[1])
@@ -97,4 +97,4 @@ except:
     print("Error: failed to create", fName)
     exit()
 
-print("ICD-10 Dictionaries have been successfully generated.")
+print("ICD-10 dictionaries have been successfully generated.")
