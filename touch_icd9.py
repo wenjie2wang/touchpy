@@ -1,0 +1,332 @@
+import math
+import pickle
+import re
+
+
+# function reformat icd9 code to numeric values
+def format_icd9(x):
+    # x should be a string that either of length zero
+    # or can be converted to numbers
+    out = x.strip().lower()
+    nx = len(out)
+    if nx > 0:
+        tmp = re.sub("e(?=[0-9]+)", "11", out)
+        tmp = re.sub("v(?=[0-9]+)", "12", tmp)
+        try:
+            out = str(int(float(tmp) * math.pow(10, 5 - nx)))
+        except:
+            out = str(tmp)
+    return out
+
+
+# function reading in dictionaries generated
+def dicts_icd9():
+    inFile = "icd9_dictionaries.txt"
+    try:
+        fhand = open(inFile)
+        dictNames = [a.strip() for a in fhand.readlines()]
+    except:
+        print("Error: failed to open/find", inFile)
+        exit()
+
+    # read in generated dictionaries
+    for oneDict in dictNames:
+        try:
+            with open(oneDict, 'rb') as handle:
+                tmp = pickle.load(handle)
+            dictIn = re.sub("dict/icd9_|\.pickle", "", oneDict)
+            exec("dicts_icd9." + dictIn + " = tmp")
+            del tmp
+        except:
+            print("Error: failed to open/find", oneDict)
+            exit()
+
+    # other constant variables
+    com1 = [0] * 30
+    com2 = ["chf", "valve", "pulmcirc", "perivasc", "htn", "htncx", "para",
+            "neuro", "chrnlung", "dm", "dmcx", "hypothy", "renlfail", "liver",
+            "ulcer", "aids", "lymph", "mets", "tumor", "arth", "coag", "obese",
+            "wghtloss", "lytes", "bldloss", "anemdef", "alcohol", "drug",
+            "psych", "depress"]
+    como = {}
+    for i in range(30):
+        como[com2[i]] = com1[i]
+    dicts_icd9.como = como
+
+    com2.append("htn_c")
+    com2.remove("htn")
+    com2.remove("htncx")
+    dicts_icd9.colNames = com2
+
+
+# function generating comorbodity measures from icd10 code
+def icd9(admission, drg_idx, dx_idx, dicts):
+
+    como = dicts.como.copy()
+    htnpreg_ = 0
+    htnwochf_ = 0
+    htnwchf_ = 0
+    hrenworf_ = 0
+    hrenwrf_ = 0
+    hhrwohrf_ = 0
+    hhrwchf_ = 0
+    hhrwrf_ = 0
+    hhrwhrf_ = 0
+    ohtnpreg_ = 0
+
+    for i in dx_idx[1:]:
+        admission[i] = format_icd9(admission[i])
+        if admission[i] == "na" or len(admission[i]) == 0:
+            continue
+        else:
+            dx_value = dicts.rcomfmt.get(int(admission[i]), "others")
+            if dx_value != "others":
+                como[dx_value] = 1
+                # detailed hypertension flags
+                if dx_value == "htnpreg":
+                    htnpreg_ = 1
+                if dx_value == "htnwochf":
+                    htnwochf_ = 1
+                if dx_value == "htnwchf":
+                    htnwchf_ = 1
+                if dx_value == "hrenworf":
+                    hrenworf_ = 1
+                if dx_value == "hrenwrf":
+                    hrenwrf_ = 1
+                if dx_value == "hhrwohrf":
+                    hhrwohrf_ = 1
+                if dx_value == "hhrwchf":
+                    hhrwchf_ = 1
+                if dx_value == "hhrwrf":
+                    hhrwrf_ = 1
+                if dx_value == "hhrwhrf":
+                    hhrwhrf_ = 1
+                if dx_value == "ohtnpreg":
+                    ohtnpreg_ = 1
+
+    # Initialize Hypertension, CHF, and Renal Comorbidity flags to 1 using the
+    # detail hypertension flags.
+    if htnpreg_ or htnwochf_ or hrenworf_ or hhrwohrf_ or ohtnpreg_:
+        como["htncx"] = 1
+    if htnwchf_:
+        como["htncx"] = 1
+        como["chf"] = 1
+    if hrenwrf_ or hhrwrf_:
+        como["htncx"] = 1
+        como["renlfail"] = 1
+    if hhrwchf_:
+        como["htncx"] = 1
+        como["chf"] = 1
+    if hhrwhrf_:
+        como["htncx"] = 1
+        como["chf"] = 1
+        como["renlfail"] = 1
+
+    # Set up code to only count the more severe comorbidity
+    if como["htncx"]:
+        como["htn"] = 0
+    if como["mets"]:
+        como["tumor"] = 0
+    if como["dmcx"]:
+        como["dm"] = 0
+
+    # Examine DRG and set flags to identify a particular DRG group
+    drg = int(admission[drg_idx])
+    cardflg = 0
+    periflg = 0
+    cereflg = 0
+    nervflg = 0
+    pulmflg = 0
+    diabflg = 0
+    hypoflg = 0
+    renalflg = 0
+    renfflg = 0
+    liverflg = 0
+    ulceflg = 0
+    hivflg = 0
+    leukflg = 0
+    cancflg = 0
+    arthflg = 0
+    nutrflg = 0
+    anemflg = 0
+    alcflg = 0
+    htncxflg = 0
+    htnflg = 0
+    coagflg = 0
+    psyflg = 0
+    obeseflg = 0
+    deprsflg = 0
+
+    if dicts.carddrg.get(drg, "no") == 'yes':
+        cardflg = 1
+    if dicts.peridrg.get(drg, "no") == 'yes':
+        periflg = 1
+    if dicts.ceredrg.get(drg, "no") == 'yes':
+        cereflg = 1
+    if dicts.nervdrg.get(drg, "no") == 'yes':
+        nervflg = 1
+    if dicts.pulmdrg.get(drg, "no") == 'yes':
+        pulmflg = 1
+    if dicts.diabdrg.get(drg, "no") == 'yes':
+        diabflg = 1
+    if dicts.hypodrg.get(drg, "no") == 'yes':
+        hypoflg = 1
+    if dicts.renaldrg.get(drg, "no") == 'yes':
+        renalflg = 1
+    if dicts.renfdrg.get(drg, "no") == 'yes':
+        renfflg = 1
+    if dicts.liverdrg.get(drg, "no") == 'yes':
+        liverflg = 1
+    if dicts.ulcedrg.get(drg, "no") == 'yes':
+        ulceflg = 1
+    if dicts.hivdrg.get(drg, "no") == 'yes':
+        hivflg = 1
+    if dicts.leukdrg.get(drg, "no") == 'yes':
+        leukflg = 1
+    if dicts.cancdrg.get(drg, "no") == 'yes':
+        cancflg = 1
+    if dicts.arthdrg.get(drg, "no") == 'yes':
+        arthflg = 1
+    if dicts.nutrdrg.get(drg, "no") == 'yes':
+        nutrflg = 1
+    if dicts.anemdrg.get(drg, "no") == 'yes':
+        anemflg = 1
+    if dicts.alcdrg.get(drg, "no") == 'yes':
+        alcflg = 1
+    if dicts.htncxdrg.get(drg, "no") == 'yes':
+        htncxflg = 1
+    if dicts.htndrg.get(drg, "no") == 'yes':
+        htnflg = 1
+    if dicts.coagdrg.get(drg, "no") == 'yes':
+        coagflg = 1
+    if dicts.psydrg.get(drg, "no") == 'yes':
+        psyflg = 1
+    if dicts.obesedrg.get(drg, "no") == 'yes':
+        obeseflg = 1
+    if dicts.deprsdrg.get(drg, "no") == 'yes':
+        deprsflg = 1
+
+    # Redefining comorbidities by eliminating the DRG directly related to
+    # comorbidity, thus limiting the screens to principal diagnoses not
+    # directly related to comorbidity in question
+    if como["chf"] and cardflg:
+        como["chf"] = 0
+    if como["valve"] and cardflg:
+        como["valve"] = 0
+    if como["pulmcirc"] and (cardflg or pulmflg):
+        como["pulmcirc"] = 0
+    if como["perivasc"] and periflg:
+        como["perivasc"] = 0
+    if como["htn"] and htnflg:
+        como["htn"] = 0
+
+    # Apply DRG Exclusions to Hypertension Complicated, Congestive Heart
+    # Failure, and Renal Failure comorbidities using the detailed hypertension
+    # flags created above.
+    if como["htncx"] and htncxflg:
+        como["htncx"] = 0
+    if htnpreg_ and htncxflg:
+        como["htncx"] = 0
+    if htnwochf_ and (htncxflg or cardflg):
+        como["htncx"] = 0
+    if htnwchf_:
+        if htncxflg:
+            como["htncx"] = 0
+        if cardflg:
+            como["htncx"] = 0
+            como["chf"] = 0
+    if hrenworf_ and (htncxflg or renalflg):
+        como["htncx"] = 0
+    if hrenwrf_:
+        if htncxflg:
+            como["htncx"] = 0
+        if renalflg:
+            como["htncx"] = 0
+            como["renlfail"] = 0
+    if hhrwohrf_ and (htncxflg or cardflg or renalflg):
+        como["htncx"] = 0
+    if hhrwchf_:
+        if htncxflg:
+            como["htncx"] = 0
+        if cardflg:
+            como["htncx"] = 0
+            como["chf"] = 0
+        if renalflg:
+            como["htncx"] = 0
+    if hhrwrf_:
+        if htncxflg or cardflg:
+            como["htncx"] = 0
+        if renalflg:
+            como["htncx"] = 0
+            como["renlfail"] = 0
+    if hhrwhrf_:
+        if htncxflg:
+            como["htncx"] = 0
+        if cardflg:
+            como["htncx"] = 0
+            como["chf"] = 0
+        if renalflg:
+            como["htncx"] = 0
+            como["renlfail"] = 0
+    if ohtnpreg_ and (htncxflg or cardflg or renalflg):
+        como["htncx"] = 0
+    if como["neuro"] and nervflg:
+        como["neuro"] = 0
+    if como["chrnlung"] and pulmflg:
+        como["chrnlung"] = 0
+    if como["dm"] and diabflg:
+        como["dm"] = 0
+    if como["dmcx"] and diabflg:
+        como["dmcx"] = 0
+    if como["hypothy"] and hypoflg:
+        como["hypothy"] = 0
+    if como["renlfail"] and renfflg:
+        como["renlfail"] = 0
+    if como["liver"] and liverflg:
+        como["liver"] = 0
+    if como["ulcer"] and ulceflg:
+        como["ulcer"] = 0
+    if como["aids"] and hivflg:
+        como["aids"] = 0
+    if como["lymph"] and leukflg:
+        como["lymph"] = 0
+    if como["mets"] and cancflg:
+        como["mets"] = 0
+    if como["tumor"] and cancflg:
+        como["tumor"] = 0
+    if como["arth"] and arthflg:
+        como["arth"] = 0
+    if como["coag"] and coagflg:
+        como["coag"] = 0
+    if como["obese"] and (nutrflg or obeseflg):
+        como["obese"] = 0
+    if como["wghtloss"] and nutrflg:
+        como["wghtloss"] = 0
+    if como["lytes"] and nutrflg:
+        como["lytes"] = 0
+    if como["bldloss"] and anemflg:
+        como["bldloss"] = 0
+    if como["anemdef"] and anemflg:
+        como["anemdef"] = 0
+    if como["alcohol"] and alcflg:
+        como["alcohol"] = 0
+    if como["drug"] and alcflg:
+        como["drug"] = 0
+    if como["psych"] and psyflg:
+        como["psych"] = 0
+    if como["depress"] and deprsflg:
+        como["depress"] = 0
+    if como["para"] and cereflg:
+        como["para"] = 0
+
+    # Combine HTN and HTNCX into HTN_C
+    if como["htn"] or como["htncx"]:
+        como["htn_c"] = 1
+    else:
+        como["htn_c"] = 0
+    # remove htn and htncx
+    como.pop("htn", None)
+    como.pop("htncx", None)
+
+    out = [como[key] for key in dicts.colNames]
+    return out
