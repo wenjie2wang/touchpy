@@ -43,9 +43,16 @@ A Makefile is provided to simplify usage. We should be able to generate output
 CSV file by simply calling `make` (or explicitly `make icd10`) in the
 terminal. We will then be asked to enter the path of the input CSV file.  The
 output file will be generated under the current directory named after the input
-file with a trailing `_touch` tag.  For example, suppose the input file is
-`data/sample_icd10.csv`, we may call `make` and enter `data/sample_icd10.csv` in
-the terminal. The output file will be `sample_icd10_touch.csv`.
+file with a trailing `_touch` tag.
+
+For example, suppose the input file is `data/sample_icd10.csv`, we may call
+`make` and enter `data/sample_icd10.csv` in the terminal. The output file will
+be `sample_icd10_touch.csv`, which contains the following 29 Elixhauser
+comorbidity measures: `CHF`, `VALVE`, `PULMCIRC`, `PERIVASC`, `HTN_C` (either
+`HTN` or `HTNCX`), `PARA`, `NEURO`, `CHRNLUNG`, `DM`, `DMCX`, `HYPOTHY`,
+`RENLFAIL`, `LIVER`, `ULCER`, `AIDS`, `LYMPH`, `METS`, `TUMOR`, `ARTH`, `COAG`,
+`OBESE`, `WGHTLOSS`, `LYTES`, `BLDLOSS`, `ANEMDEF`, `ALCOHOL`, `DRUG`, `PSYCH`,
+`DEPRESS`.
 
 
 ## Alternative usage (without using make)
