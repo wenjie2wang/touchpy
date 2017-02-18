@@ -3,6 +3,7 @@
 
 import os
 import re
+import time
 import touch_icd9 as touch
 
 
@@ -62,4 +63,6 @@ fout.close()
 
 
 # output message
-print("Comorbidity measures have been generated in", outputFile)
+print("Comorbidity measures have been successfully generated.")
+print("Output file:", outputFile)
+print("The system and user CPU time: %.3f seconds." % time.process_time())
