@@ -18,11 +18,11 @@ and correctness.
   module is needed.
 
 - The input data has to be a comma-separated values (CSV) file, which contains
-  header or column names for ICD-9 or ICD-10 codes, and diagnosis-related group
-  (DRG) codes, etc. in the first row.
+  headers or column names for ICD-9 or ICD-10 diagnostic codes, and
+  diagnosis-related group (DRG) codes, etc. in the first row.
 
-- There has to be at least one column of ICD-10 codes and the column names of
-  ICD-9 or ICD-10 codes have to start with `DX` or `dx` (not case-sensitive). In
+- There has to be at least one column of diagnostic codes and the column names
+  of diagnostic codes have to start with `DX` or `dx` (not case-sensitive). In
   addition, the principal diagnosis (usually `DX1`) must be given before
   secondary diagnoses.
 
@@ -30,8 +30,8 @@ and correctness.
   with `DRG` or `drg` (not case-sensitive). (If multiple columns of DRG codes
   are detected, the last one will be used.)
 
-- Missing ICD-9 or ICD-10 codes should be indicated by blanks (white spaces),
-  `NA`, or `na` (not case-sensitive).
+- Missing diagnostic codes should be indicated by blanks (white spaces), `NA`,
+  or `na` (not case-sensitive).
 
 
 # Getting Started
@@ -47,9 +47,9 @@ cd touchpy
 
 A Makefile is provided to simplify usage.  We should be able to generate output
 CSV file by simply calling `make icd9` or `make icd10` in the terminal for ICD-9
-codes or ICD-10 codes, respectively.  We will then be asked to enter the path of
-the input CSV file.  The output file will be generated under the current
-directory named after the input file with a trailing `_touch` tag.
+or ICD-10 codes, respectively.  We will then be asked to enter the path of the
+input CSV file.  The output file will be generated under the current directory
+named after the input file with a trailing `_touch` tag.
 
 For example, suppose we want to generate comorbidity measures from ICD-10 codes
 and the input file is `data/sample_icd10.csv`, we may simply call `make icd10`
