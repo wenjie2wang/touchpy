@@ -24,8 +24,8 @@ admission records against the SAS program from HCUP.
 
 ## Requirements
 
-- **touchpy** only requires **Python 3** ($\ge$ version 3.3) and its standard
-  modules.  No extra module is needed.
+- **touchpy** only requires **Python 3** (>= 3.3) and its standard modules.  No
+  extra module is needed.
 
 - The input data has to be a comma-separated values (CSV) file, which contains
   headers or column names for ICD-9 or ICD-10 diagnostic codes, and
@@ -110,7 +110,7 @@ from HCUP.
 
 ## License
 
-**touchpy** is free and open source software, licensed under GPL $(\ge3)$.
+**touchpy** is free and open source software, licensed under GPL (>=3).
 
 
 
