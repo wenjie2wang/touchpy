@@ -1,12 +1,12 @@
 # for icd-10 codes
-sas_icd10 := sas/comformat_icd10cm_2017.sas sas/comoanaly_icd10cm_2017.sas
+sas_icd10 := hcup/comformat_icd10cm_2017.txt hcup/comoanaly_icd10cm_2017.txt
 dict_icd10 := icd10_dictionaries.txt
 
 hcup_icd10 := hcup_icd10.py
 parse_icd10 := parse_icd10.py
 
 # for icd-9 codes
-sas_icd9 := sas/comformat2012-2015.sas sas/comoanaly2012-2015.sas
+sas_icd9 := hcup/comformat2012-2015.txt hcup/comoanaly2012-2015.txt
 dict_icd9 := icd9_dictionaries.txt
 
 hcup_icd9 := hcup_icd9.py

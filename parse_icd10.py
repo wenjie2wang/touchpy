@@ -11,7 +11,7 @@ import re
 
 
 # read format script
-fName = "sas/comformat_icd10cm_2017.sas"
+fName = "hcup/comformat_icd10cm_2017.txt"
 try:
     fhand = open(fName)
 except:

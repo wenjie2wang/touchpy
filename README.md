@@ -1,6 +1,6 @@
 # touchpy
 
-**touchpy** is an **Python** implementation of the software tools developed in
+**touchpy** is a **Python** implementation of the software tools developed in
 the [H-CUP][hcup] (Healthcare Cost and Utilization Project) at AHRQ (Agency for
 Healthcare Research and Quality) and it provides functions to map ICD-9 or
 ICD-10 code to AHRQ comorbidity measures.
@@ -13,7 +13,7 @@ ICD-10 code to AHRQ comorbidity measures.
 <!-- - R package -->
 
 
-## Development
+## development
 
 This project is still under development now and needs testing for performance
 and correctness for ICD-10 codes.

@@ -12,7 +12,7 @@ from touch_icd9 import format_icd9
 
 
 # read format script
-fName = "sas/comformat2012-2015.sas"
+fName = "hcup/comformat2012-2015.txt"
 try:
     fhand = open(fName)
 except:
