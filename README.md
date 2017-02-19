@@ -6,14 +6,14 @@ Healthcare Research and Quality) and it provides functions to map ICD-9 or
 ICD-10 code to AHRQ comorbidity measures.
 
 
-<!-- # Comparison with other implementation -->
+<!-- # Comparison with some other existing implementation -->
 
 <!-- - SAS programs from HCUP -->
 
 <!-- - R package -->
 
 
-## development
+## Development
 
 This project is still under development now and needs testing for performance
 and correctness for ICD-10 codes.
